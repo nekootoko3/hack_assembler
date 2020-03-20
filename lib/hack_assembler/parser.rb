@@ -31,7 +31,7 @@ class HackAssembler::Parser
     end
   end
 
-  # @reutnr [String]
+  # @return [String]
   def symbol
     return unless symbol_enabled?
 

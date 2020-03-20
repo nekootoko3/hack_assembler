@@ -24,7 +24,7 @@ class HackAssembler::Cli
           HackAssembler::Code.jump(parser.jump)
         )
       when HackAssembler::CommandType::A_COMMAND
-        if parser.symbol == /^[0-9]+$/
+        if parser.symbol =~ /^[0-9]+$/
           output.puts("0" + sprintf("%015b", parser.symbol.to_i))
         else
           symbol_table.add_entry(parser.symbol) unless symbol_table.contains?(parser.symbol)
@@ -35,18 +35,23 @@ class HackAssembler::Cli
         raise "Invalid command type #{parser.command_type}"
       end
     end
+  ensure
+    input.close
+    output.close
   end
 
   private
 
   def self.generate_symbol_table(parser)
+    label_count = 0
     symbol_table = HackAssembler::SymbolTable.new
 
     while parser.has_more_commands?
       parser.advance!
 
       if parser.command_type == HackAssembler::CommandType::L_COMMAND
-        symbol_table.add_entry(parser.symbol, parser.next_line_number)
+        label_count += 1
+        symbol_table.add_entry(parser.symbol, parser.next_line_number - label_count)
       end
     end
 
