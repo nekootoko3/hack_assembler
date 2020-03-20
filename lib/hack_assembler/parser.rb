@@ -2,6 +2,8 @@ require "hack_assembler"
 require "hack_assembler/command_type"
 
 class HackAssembler::Parser
+  attr_reader :next_line_number
+
   def initialize(input_file)
     File.open(input_file) do |f|
       @commands = remove_comment_and_space(f.readlines.map {|line| line.strip })
@@ -15,7 +17,7 @@ class HackAssembler::Parser
   end
 
   def advance!
-    return unless has_more_commands?
+    raise "No new command exists" unless has_more_commands?
 
     @current_command = @commands[@next_line_number]
     @next_line_number += 1
@@ -23,15 +25,13 @@ class HackAssembler::Parser
 
   def command_type
     case @current_command[0]
-    when "@"
-      HackAssembler::CommandType::A_COMMAND
-    when "("
-      HackAssembler::CommandType::L_COMMAND
-    else
-      HackAssembler::CommandType::C_COMMAND
+    when "@"; HackAssembler::CommandType::A_COMMAND
+    when "("; HackAssembler::CommandType::L_COMMAND
+    else HackAssembler::CommandType::C_COMMAND
     end
   end
 
+  # @reutnr [String]
   def symbol
     return unless symbol_enabled?
 
@@ -54,8 +54,8 @@ class HackAssembler::Parser
   def comp
     return unless command_type == HackAssembler::CommandType::C_COMMAND
 
-    res = @current_command.match(/.*=(.*)/).to_a[1]
-    res ||= @current_command.match(/(.*);.*/).to_a[1]
+    @current_command.match(/.*=(.*)/).to_a[1] ||
+      @current_command.match(/(.*);.*/).to_a[1]
   end
 
   def jump
@@ -68,7 +68,7 @@ class HackAssembler::Parser
 
   def remove_comment_and_space(commands)
     commands.map do |c|
-      c.sub!(" ", "")
+      c.sub!(/\s+/, "")
       c.sub!(/\/\/.*/, "")
       c.empty? ? nil : c
     end.compact

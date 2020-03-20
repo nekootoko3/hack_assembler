@@ -3,9 +3,9 @@ module HackAssembler::Code
   # @return [String]
   def self.dest(mnemonic)
     dest = 0b000
-    dest += 0b100 if mnemonic.include?("A")
-    dest += 0b010 if mnemonic.include?("D")
-    dest += 0b001 if mnemonic.include?("M")
+    dest += 0b100 if mnemonic&.include?("A")
+    dest += 0b010 if mnemonic&.include?("D")
+    dest += 0b001 if mnemonic&.include?("M")
     sprintf("%03b", dest)
   end
 
