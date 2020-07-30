@@ -37,7 +37,6 @@ module HackAssembler
         end
       end
     ensure
-      input.close
       output.close
     end
 
