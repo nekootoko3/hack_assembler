@@ -16,8 +16,8 @@ module HackAssembler
     INITIAL_VARIABLE_ADDRESS = 16
 
     def initialize
-      @symbol_table = PREDEFINED_SYMBOL_TABLE.dup
-      @current_address = INITIAL_VARIABLE_ADDRESS.dup
+      @symbol_table = PREDEFINED_SYMBOL_TABLE
+      @current_address = INITIAL_VARIABLE_ADDRESS
     end
 
     def add_entry(symbol, address = @current_address)
