@@ -8,10 +8,9 @@ module HackAssembler
       "SCREEN" => 16384, "KBD" => 24576 }.freeze
     INITIAL_VARIABLE_ADDRESS = 16
 
-    attr_reader :parser, :mappings
+    attr_reader :mappings
 
     def initialize(parser)
-      @parser = parser
       @mappings = PREDEFINED_SYMBOL_ADDRESS_MAPPINGS.dup
       @current_address = INITIAL_VARIABLE_ADDRESS.dup
 
