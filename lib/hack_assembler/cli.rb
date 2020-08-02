@@ -9,11 +9,11 @@ module HackAssembler
       new.start
     end
 
-    attr_reader :asm_file, :output
+    attr_reader :asm_file, :output_file
 
     def initialize
       @asm_file = ARGV[0]
-      @output = ARGV[1].nil? ? $stdout : File.open(ARGV[1], "w+")
+      @output_file = ARGV[1]
     end
 
     def start
@@ -46,6 +46,14 @@ module HackAssembler
       end
     ensure
       output.close
+    end
+
+    private
+
+    def output
+      return @output if defined?(@output)
+
+      @output = output_file.nil? ? $stdout : File.open(output_file, "w+")
     end
   end
 end
