@@ -5,12 +5,24 @@ module HackAssembler
   class Parser
     attr_reader :next_line_number
 
-    def initialize(input_file)
-      File.open(input_file) do |f|
+    def initialize(asm_file)
+      File.open(asm_file) do |f|
         @commands = remove_comment_and_space(f.readlines.map {|line| line.strip })
       end
       @current_command = nil
       @next_line_number = 0
+    end
+
+    def add_labels!(symbol_table)
+      label_count = 0
+      while has_more_commands?
+        advance!
+
+        if command_type == CommandType::L_COMMAND
+          label_count += 1
+          symbol_table.add_entry(symbol, next_line_number - label_count)
+        end
+      end
     end
 
     def has_more_commands?

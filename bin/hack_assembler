@@ -4,4 +4,4 @@ $LOAD_PATH.unshift File.dirname(__FILE__) + "/../lib"
 
 require "hack_assembler"
 
-HackAssembler::Cli.start ARGV
+HackAssembler::Cli.start

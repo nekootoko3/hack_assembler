@@ -5,14 +5,22 @@ require "hack_assembler/symbol_table"
 
 module HackAssembler
   class Cli
-    def self.start(args)
-      input = args[0]
-      output = args[1].nil? ? $stdout : File.open(args[1], "w+")
+    def self.start
+      new.start
+    end
 
-      raise "Invalid file extension" unless File.extname(input) == ".asm"
+    attr_reader :asm_file, :output_file
 
-      parser = Parser.new(input)
-      symbol_table = generate_symbol_table(parser.dup)
+    def initialize
+      @asm_file = ARGV[0]
+      @output_file = ARGV[1]
+    end
+
+    def start
+      raise ArgumentError, "Invalid file extension" unless File.extname(asm_file) == ".asm"
+
+      parser = Parser.new(asm_file)
+      symbol_table = SymbolTable.new(parser.dup)
       while parser.has_more_commands?
         parser.advance!
 
@@ -42,20 +50,10 @@ module HackAssembler
 
     private
 
-    def self.generate_symbol_table(parser)
-      label_count = 0
-      symbol_table = SymbolTable.new
+    def output
+      return @output if defined?(@output)
 
-      while parser.has_more_commands?
-        parser.advance!
-
-        if parser.command_type == CommandType::L_COMMAND
-          label_count += 1
-          symbol_table.add_entry(parser.symbol, parser.next_line_number - label_count)
-        end
-      end
-
-      symbol_table
+      @output = output_file.nil? ? $stdout : File.open(output_file, "w+")
     end
   end
 end

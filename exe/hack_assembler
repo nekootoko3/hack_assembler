@@ -2,6 +2,4 @@
 
 require "hack_assembler"
 
-print ARGV
-
-HackAssembler::Cli.start ARGV
+HackAssembler::Cli.start
