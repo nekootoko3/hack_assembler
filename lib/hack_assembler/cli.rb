@@ -20,7 +20,7 @@ module HackAssembler
       raise ArgumentError, "Invalid file extension" unless File.extname(asm_file) == ".asm"
 
       parser = Parser.new(asm_file)
-      symbol_table = generate_symbol_table(parser.dup)
+      symbol_table = SymbolTable.new(parser.dup)
       while parser.has_more_commands?
         parser.advance!
 
@@ -46,24 +46,6 @@ module HackAssembler
       end
     ensure
       output.close
-    end
-
-    private
-
-    def generate_symbol_table(parser)
-      label_count = 0
-      symbol_table = SymbolTable.new
-
-      while parser.has_more_commands?
-        parser.advance!
-
-        if parser.command_type == CommandType::L_COMMAND
-          label_count += 1
-          symbol_table.add_entry(parser.symbol, parser.next_line_number - label_count)
-        end
-      end
-
-      symbol_table
     end
   end
 end

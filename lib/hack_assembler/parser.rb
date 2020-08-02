@@ -13,6 +13,18 @@ module HackAssembler
       @next_line_number = 0
     end
 
+    def add_labels!(symbol_table)
+      label_count = 0
+      while has_more_commands?
+        advance!
+
+        if command_type == CommandType::L_COMMAND
+          label_count += 1
+          symbol_table.add_entry(symbol, next_line_number - label_count)
+        end
+      end
+    end
+
     def has_more_commands?
       !@commands[@next_line_number].nil?
     end
