@@ -1,8 +1,11 @@
 require "hack_assembler"
-require "hack_assembler/command_type"
 
 module HackAssembler
   class Parser
+    A_COMMAND = "A_COMMAND"
+    C_COMMAND = "C_COMMAND"
+    L_COMMAND = "L_COMMAND"
+
     attr_reader :next_line_number
 
     def initialize(asm_file)
@@ -18,7 +21,7 @@ module HackAssembler
       while has_more_commands?
         advance!
 
-        if command_type == CommandType::L_COMMAND
+        if command_type == L_COMMAND
           label_count += 1
           symbol_table.add_entry(symbol, next_line_number - label_count)
         end
@@ -38,9 +41,9 @@ module HackAssembler
 
     def command_type
       case @current_command[0]
-      when "@"; CommandType::A_COMMAND
-      when "("; CommandType::L_COMMAND
-      else CommandType::C_COMMAND
+      when "@"; A_COMMAND
+      when "("; L_COMMAND
+      else C_COMMAND
       end
     end
 
@@ -49,9 +52,9 @@ module HackAssembler
       return unless symbol_enabled?
 
       case command_type
-      when CommandType::A_COMMAND
+      when A_COMMAND
         @current_command.match(/@(.*)/).to_a[1]
-      when CommandType::L_COMMAND
+      when L_COMMAND
         @current_command.match(/\((.*)\)/).to_a[1]
       else
         raise "only A or C command are allowed"
@@ -59,20 +62,20 @@ module HackAssembler
     end
 
     def dest
-      return unless command_type == CommandType::C_COMMAND
+      return unless command_type == C_COMMAND
 
       @current_command.match(/(.*)=.*/).to_a[1]
     end
 
     def comp
-      return unless command_type == CommandType::C_COMMAND
+      return unless command_type == C_COMMAND
 
       @current_command.match(/.*=(.*)/).to_a[1] ||
         @current_command.match(/(.*);.*/).to_a[1]
     end
 
     def jump
-      return unless command_type == CommandType::C_COMMAND
+      return unless command_type == C_COMMAND
 
       @current_command.match(/.*;(.*)/).to_a[1]
     end
@@ -89,8 +92,8 @@ module HackAssembler
 
     def symbol_enabled?
       [
-        CommandType::A_COMMAND,
-        CommandType::L_COMMAND,
+        Parser::A_COMMAND,
+        Parser::L_COMMAND,
       ].include?(command_type)
     end
   end

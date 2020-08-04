@@ -25,21 +25,21 @@ module HackAssembler
         parser.advance!
 
         case parser.command_type
-        when CommandType::C_COMMAND
+        when Parser::C_COMMAND
           output.puts(
             "111" +
             Code.comp(parser.comp) +
             Code.dest(parser.dest) +
             Code.jump(parser.jump)
           )
-        when CommandType::A_COMMAND
+        when Parser::A_COMMAND
           if parser.symbol =~ /^[0-9]+$/
             output.puts("0" + sprintf("%015b", parser.symbol.to_i))
           else
             symbol_table.add_entry(parser.symbol) unless symbol_table.contains?(parser.symbol)
             output.puts("0" + sprintf("%015b", symbol_table.get_address(parser.symbol)))
           end
-        when CommandType::L_COMMAND
+        when Parser::L_COMMAND
         else
           raise "Invalid command type #{parser.command_type}"
         end
