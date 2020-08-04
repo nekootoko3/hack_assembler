@@ -1,5 +1,3 @@
-require "hack_assembler"
-
 module HackAssembler
   class Parser
     A_COMMAND = 0
@@ -33,7 +31,7 @@ module HackAssembler
     end
 
     def advance!
-      raise "No new command exists" unless has_more_commands?
+      raise HackAssembler::Error, "No new command exists" unless has_more_commands?
 
       @current_command = @commands[@next_line_number]
       @next_line_number += 1

@@ -19,9 +19,9 @@ module HackAssembler
     def start
       raise ArgumentError, "Invalid file extension" unless File.extname(asm_file) == ".asm"
 
+      output = output_file.nil? ? $stdout : File.open(output_file, "w+")
       parser = Parser.new(asm_file)
       symbol_table = SymbolTable.new(parser)
-      output = output_file.nil? ? $stdout : File.open(output_file, "w+")
       while parser.has_more_commands?
         parser.advance!
 
