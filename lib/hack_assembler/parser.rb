@@ -2,9 +2,9 @@ require "hack_assembler"
 
 module HackAssembler
   class Parser
-    A_COMMAND = "A_COMMAND"
-    C_COMMAND = "C_COMMAND"
-    L_COMMAND = "L_COMMAND"
+    A_COMMAND = 0
+    C_COMMAND = 1
+    L_COMMAND = 2
 
     attr_reader :next_line_number
 
@@ -92,8 +92,8 @@ module HackAssembler
 
     def symbol_enabled?
       [
-        Parser::A_COMMAND,
-        Parser::L_COMMAND,
+        A_COMMAND,
+        L_COMMAND,
       ].include?(command_type)
     end
   end

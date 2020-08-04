@@ -21,6 +21,7 @@ module HackAssembler
 
       parser = Parser.new(asm_file)
       symbol_table = SymbolTable.new(parser)
+      output = output_file.nil? ? $stdout : File.open(output_file, "w+")
       while parser.has_more_commands?
         parser.advance!
 
@@ -46,14 +47,6 @@ module HackAssembler
       end
     ensure
       output.close
-    end
-
-    private
-
-    def output
-      return @output if defined?(@output)
-
-      @output = output_file.nil? ? $stdout : File.open(output_file, "w+")
     end
   end
 end
