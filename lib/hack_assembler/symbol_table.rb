@@ -12,9 +12,9 @@ module HackAssembler
 
     def initialize(parser)
       @mappings = PREDEFINED_SYMBOL_ADDRESS_MAPPINGS.dup
-      @current_address = INITIAL_VARIABLE_ADDRESS.dup
+      @current_address = INITIAL_VARIABLE_ADDRESS
 
-      parser.add_labels!(self)
+      parser.dup.add_labels!(self)
     end
 
     def add_entry(symbol, address = @current_address)
